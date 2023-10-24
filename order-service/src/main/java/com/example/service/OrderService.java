@@ -21,7 +21,7 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
-    public void placeOrder(OrderRequest orderRequest){
+    public String placeOrder(OrderRequest orderRequest){
         Order order = new Order(); //order object has 3 attributes
         //order number
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -57,6 +57,7 @@ public class OrderService {
         if(allProductsInStock){
             //save order to db if result true
             orderRepository.save(order);
+            return "Order placed successfully";
         }else{
             throw new IllegalArgumentException("One or more products not in stock, try again later");
         }
