@@ -71,6 +71,23 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <from>
+                        <image>eclipse-temurin:17.0.5_8-jre</image>
+                    </from>
+                    <to>
+                        <image>registry.hub.docker.com/nidhimadnani22/${project.artifactId}</image>
+                        <auth>
+                            <username>nidhimadnani22</username>
+                            <password>P)mEnwq#dNt7R2p</password>
+                        </auth>
+                    </to>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
