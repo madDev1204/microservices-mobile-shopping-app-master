@@ -5,8 +5,10 @@ import com.example.dto.OrderLineItemsDto;
 import com.example.dto.OrderRequest;
 import com.example.entity.Order;
 import com.example.entity.OrderLineItems;
+import com.example.event.OrderPlacedEvent;
 import com.example.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +23,8 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+    //topic, Object in send() method as key value pair
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order(); //order object has 3 attributes
         //order number
@@ -55,6 +59,8 @@ public class OrderService {
             //only if all items are in inventory accept the order i.e., if isInStock for ALL inventory items is true then only return true
             boolean allProductsInStock = Arrays.stream(inventoryResponseArray).allMatch(InventoryResponse::isInStock);
             if (allProductsInStock) {
+                //notification!!!!
+                kafkaTemplate.send("notifyTopic",new OrderPlacedEvent(order.getOrderNumber()));
                 //save order to db if result true
                 orderRepository.save(order);
                 return "Order placed successfully";
